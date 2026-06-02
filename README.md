@@ -35,7 +35,7 @@ The following test cases are automated:
 - Assertions for validating login, cart, checkout, logout, and order confirmation flows
 - Clean and readable test steps with console logs
 
-##How to Run Tests
+## How to Run Tests
 
 Clone the repository:
 
@@ -49,6 +49,6 @@ Run tests using Maven:
 
 mvn clean test
 
-##Author
+## Author
 
 Mahigna Reddy
