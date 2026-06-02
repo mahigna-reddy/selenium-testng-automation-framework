@@ -44,6 +44,12 @@ public class LoginBasicTest {
 		driver.quit();
 	}
 
+	public void loginAsStandardUser() {
+		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).sendKeys("standard_user");
+		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).sendKeys("secret_sauce");
+		driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).click();
+	}
+
 	@Test
 	public void verifyValidUserCanLoginSuccessfully() throws InterruptedException {
 		System.out.println("0. Start");
@@ -52,30 +58,16 @@ public class LoginBasicTest {
 		driver.get("https://www.saucedemo.com/");
 		Thread.sleep(2000);
 		driver.manage().window().setSize(new Dimension(1350, 637));
-		
-		System.out.println("2. Insert username and password");
-		
-		System.out.println(" 2.1 Insert username");
-		driver.findElement(By.id("login_credentials")).click();
-		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).click();
-		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).sendKeys("standard_user");
-		
-		System.out.println(" 2.1 Insert password");
-		driver.findElement(By.cssSelector(".login_password")).click();
-		Thread.sleep(2000);
-		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).click();
-		Thread.sleep(2000);
-		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).sendKeys("secret_sauce");
-		Thread.sleep(2000);
-		
-		System.out.println("3. Click submit to perform login");
-		driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).click();
 
-		System.out.println("4. Verify login has been successfully executed");
+		System.out.println("2. Login with valid user");
+		loginAsStandardUser();
+		Thread.sleep(2000);
+
+		System.out.println("3. Verify login has been successfully executed");
 		System.out.println(" 4.1 Page title is 'Swag Labs'");
 		Assert.assertEquals(driver.getTitle(), "Swag Labs");
 		
-		System.out.println(" 4.2 Page url contains 'inventory'");
+		System.out.println(" 3.2 Page url contains 'inventory'");
 		Assert.assertEquals(driver.getCurrentUrl().contains("inventory"), true);
 		
 		//Pause the execution for 2 seconds to show the logged in page
@@ -85,7 +77,7 @@ public class LoginBasicTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("5. End");
+		System.out.println("4. End");
 	}
 	@Test
 	public void verifyErrorMessageForInvalidLogin() throws InterruptedException {
@@ -96,11 +88,9 @@ public class LoginBasicTest {
 		driver.manage().window().setSize(new Dimension(1350, 637));
 
 		System.out.println("1. Enter invalid username and password");
-		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).sendKeys("invalid_user");
+		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).sendKeys("no_user");
 		Thread.sleep(2000);
 		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).sendKeys("wrong_password");
-		Thread.sleep(2000);
-
 		System.out.println("2. Click login button");
 		driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).click();
 		Thread.sleep(2000);
@@ -124,9 +114,7 @@ public class LoginBasicTest {
 		Thread.sleep(2000);
 
 		System.out.println("1. Login with valid user");
-		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).sendKeys("standard_user");
-		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).sendKeys("secret_sauce");
-		driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).click();
+		loginAsStandardUser();
 		Thread.sleep(2000);
 
 		System.out.println("2. Add Sauce Labs Backpack to cart");
@@ -168,9 +156,7 @@ public class LoginBasicTest {
 		Thread.sleep(2000);
 
 		System.out.println("1. Login with valid user");
-		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).sendKeys("standard_user");
-		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).sendKeys("secret_sauce");
-		driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).click();
+		loginAsStandardUser();
 		Thread.sleep(2000);
 
 		System.out.println("2. Add multiple products to cart");
@@ -254,9 +240,7 @@ public class LoginBasicTest {
 		Thread.sleep(2000);
 
 		System.out.println("1. Login with valid user");
-		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).sendKeys("standard_user");
-		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).sendKeys("secret_sauce");
-		driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).click();
+		loginAsStandardUser();
 		Thread.sleep(2000);
 
 		System.out.println("2. Open menu");
