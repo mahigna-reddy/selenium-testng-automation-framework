@@ -1,6 +1,6 @@
 # Selenium TestNG Automation Framework
 
-This project is a Selenium automation framework built using Java, TestNG, Maven, and WebDriverManager. It automates end-to-end test scenarios on the SauceDemo web application.
+Selenium TestNG automation framework using Java, Maven, WebDriverManager and reusable test methods.
 
 ## Tech Stack
 
