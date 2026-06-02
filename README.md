@@ -1,33 +1,89 @@
-# 1. Abstract
-This project (downloadable from git) is a very minimalistic Maven project to run a Selenium Java Test Case performing a simple login against the demo eCommerce website on:
-https://www.saucedemo.com/
+# Selenium TestNG Automation Framework
 
-The project simply imports via Maven Selenium, Chrome Driver (or Gecko Driver for Firefox) and TestNG, and it consists of a signle test case LoginBasicTest.java that executes a login using the WebDriver API and verify the expected result via TestNG assertion.
-The project is by purpose very simple to show a very basic setup to run Selenium automation, the pom.xml is the required Maven file with the dependencies, and the testng.xml file is the file used by TestNG to configure the test cases.
+This project is a Selenium automation framework built using Java, TestNG, Maven, and WebDriverManager. It automates end-to-end test scenarios on the SauceDemo web application.
 
+## Tech Stack
 
-# 2. Prerequirements
-- Java 1.8.x
-- Maven (configured properly with Java)
-- Internet connection
-- Google Chrome browser
-- Selenium Chrome Driver (download here: `http://chromedriver.chromium.org/downloads` select the right platform, download and unzip and store somewhere safe the executable)
-- (Optional) Selenium Gecko Driver for Firefox (download here: `https://github.com/mozilla/geckodriver/releases`, select the right platform, download and unzip and store somewhere safe the executable)
-- *IMPORTANT:* please provide the selenium chrome driver full path as value of the `CHROME_DRIVER_FULL_PATH` variable inside the test case file `/src/test/java/tests/LoginBasicTest.java`, before executing the tests (see the current property value for an example).
-If you want alternatively to use Firefox for the testing, please uncomment rows 23, 30 and 31 and comment rows 22, 28 and 29, and assign to `GECKO_DRIVER_FULL_PATH` a value as the full path to the Gecko driver executable, previously downloaded.
+* Java
+* Selenium WebDriver
+* TestNG
+* Maven
+* WebDriverManager
+* IntelliJ IDEA
+* GitHub
 
-# 3. Installation
-- Checkout/download the project from the git repository into a root folder
+## Application Under Test
 
-# 4. To run the test cases
-- Open a Command Line
-- Go where this project was checked out (root folder)
-- Run 
+SauceDemo: https://www.saucedemo.com/
+
+## Automated Test Scenarios
+
+The following test cases are automated:
+
+1. Verify valid user can login successfully
+2. Verify error message for invalid login
+3. Verify user can add product to cart
+4. Verify user can logout successfully
+5. Verify user can complete checkout successfully with multiple products
+
+## Key Features
+
+* Browser automation using Selenium WebDriver
+* Test execution using TestNG
+* Maven-based dependency management
+* WebDriverManager for automatic browser driver setup
+* ChromeOptions configuration to disable browser password popups during automation
+* Reusable login helper method for standard user login
+* Assertions for validating login, error messages, cart count, cart contents, checkout overview, logout, and order confirmation
+* Clean and readable test steps with console logs
+
+## Project Structure
+
+```text
+selenium-testng-automation-framework
+├── src
+│   └── test
+│       └── java
+│           └── tests
+│               └── LoginBasicTest.java
+├── pom.xml
+├── testng.xml
+├── README.md
+└── .gitignore
 ```
-"mvn clean verify"
+
+## How to Run Tests
+
+Clone the repository:
+
+```bash
+git clone https://github.com/mahigna-reddy/selenium-testng-automation-framework.git
 ```
-The command will clean any existing target folder, compile and build the project and run the test case.
-The screen command line output will provide the test logs and information.
 
-Note: on some OS like on a Mac, at the first execution please remember to give the rights from the security checkings to execute the Chrome or Gecko Driver executable file.
+Go to the project folder:
 
+```bash
+cd selenium-testng-automation-framework
+```
+
+Run tests using Maven:
+
+```bash
+mvn clean test
+```
+
+## What I Practiced
+
+Through this project, I practiced:
+
+* Creating and running Selenium WebDriver tests
+* Using TestNG annotations such as `@Test`, `@BeforeMethod`, and `@AfterMethod`
+* Managing dependencies using Maven
+* Using WebDriverManager instead of manually downloading browser drivers
+* Writing assertions to validate expected results
+* Automating complete end-to-end user flows
+* Using GitHub to maintain and share automation code
+
+## Author
+
+Mahigna Reddy
