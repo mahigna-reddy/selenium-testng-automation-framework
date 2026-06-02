@@ -35,9 +35,20 @@ The following test cases are automated:
 - Assertions for validating login, cart, checkout, logout, and order confirmation flows
 - Clean and readable test steps with console logs
 
-## How to Run Tests
+##How to Run Tests
 
 Clone the repository:
 
-```bash
 git clone https://github.com/mahigna-reddy/selenium-testng-automation-framework.git
+
+Go to the project folder:
+
+cd selenium-testng-automation-framework
+
+Run tests using Maven:
+
+mvn clean test
+
+##Author
+
+Mahigna Reddy
