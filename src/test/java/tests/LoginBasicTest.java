@@ -1,12 +1,14 @@
 package tests;
 
-
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
+import org.openqa.selenium.chrome.ChromeOptions;
+import java.util.HashMap;
+import java.util.Map;
 import org.testng.annotations.*;
 
 /*
@@ -17,31 +19,38 @@ import org.testng.annotations.*;
  * Adding in the setup the setting of the property "webdriver.chrome.driver" pointing to the absolute folder on my computer of the Chrome Web Driver.
  * So this has to be changed accordingly
  */
+
 public class LoginBasicTest {
-	//IMPORTANT: Please download a Chrome driver and set this variable to the full path to the file
-	private final static String CHROME_DRIVER_FULL_PATH = "/Users/leonardolanni/Downloads/chromedriver_113_m1";
-	//private final static String GECKO_DRIVER_FULL_PATH = "/Users/leonardolanni/Downloads/geckodriver";
 	private WebDriver driver;
 
-	@BeforeTest
+	@BeforeMethod
 	public void setUp() {
-		System.setProperty("webdriver.chrome.driver", CHROME_DRIVER_FULL_PATH);
-		driver = new ChromeDriver();
-		//System.setProperty("webdriver.gecko.driver", GECKO_DRIVER_FULL_PATH);
-		//driver = new FirefoxDriver();
+		WebDriverManager.chromedriver().setup();
+		ChromeOptions options = new ChromeOptions();
+
+		Map<String, Object> prefs = new HashMap<>();
+		prefs.put("credentials_enable_service", false);
+		prefs.put("profile.password_manager_enabled", false);
+		prefs.put("profile.password_manager_leak_detection", false);
+
+		options.setExperimentalOption("prefs", prefs);
+		options.addArguments("--disable-save-password-bubble");
+
+		driver = new ChromeDriver(options);
 	}
 
-	@AfterTest
+	@AfterMethod
 	public void tearDown() {
 		driver.quit();
 	}
 
 	@Test
-	public void login() {
+	public void verifyValidUserCanLoginSuccessfully() throws InterruptedException {
 		System.out.println("0. Start");
 		
 		System.out.println("1. Open target page");
 		driver.get("https://www.saucedemo.com/");
+		Thread.sleep(2000);
 		driver.manage().window().setSize(new Dimension(1350, 637));
 		
 		System.out.println("2. Insert username and password");
@@ -53,8 +62,11 @@ public class LoginBasicTest {
 		
 		System.out.println(" 2.1 Insert password");
 		driver.findElement(By.cssSelector(".login_password")).click();
+		Thread.sleep(2000);
 		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).click();
+		Thread.sleep(2000);
 		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).sendKeys("secret_sauce");
+		Thread.sleep(2000);
 		
 		System.out.println("3. Click submit to perform login");
 		driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).click();
@@ -74,5 +86,191 @@ public class LoginBasicTest {
 			e.printStackTrace();
 		}
 		System.out.println("5. End");
+	}
+	@Test
+	public void verifyErrorMessageForInvalidLogin() throws InterruptedException {
+		System.out.println("0. Start invalid login test");
+
+		driver.get("https://www.saucedemo.com/");
+		Thread.sleep(2000);
+		driver.manage().window().setSize(new Dimension(1350, 637));
+
+		System.out.println("1. Enter invalid username and password");
+		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).sendKeys("invalid_user");
+		Thread.sleep(2000);
+		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).sendKeys("wrong_password");
+		Thread.sleep(2000);
+
+		System.out.println("2. Click login button");
+		driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).click();
+		Thread.sleep(2000);
+		System.out.println("3. Verify error message is displayed");
+		String errorMessage = driver.findElement(By.cssSelector("*[data-test=\"error\"]")).getText();
+		Thread.sleep(2000);
+		Assert.assertTrue(
+				errorMessage.contains("Username and password do not match"),
+				"Error message was not displayed correctly"
+		);
+
+		System.out.println("4. End invalid login test");
+	}
+
+	@Test
+	public void verifyUserCanAddProductToCart() throws InterruptedException {
+		System.out.println("0. Start add product to cart test");
+
+		driver.get("https://www.saucedemo.com/");
+		driver.manage().window().setSize(new Dimension(1350, 637));
+		Thread.sleep(2000);
+
+		System.out.println("1. Login with valid user");
+		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).sendKeys("standard_user");
+		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).sendKeys("secret_sauce");
+		driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).click();
+		Thread.sleep(2000);
+
+		System.out.println("2. Add Sauce Labs Backpack to cart");
+		driver.findElement(By.cssSelector("*[data-test=\"add-to-cart-sauce-labs-backpack\"]")).click();
+		Thread.sleep(1000);
+
+		System.out.println("3. Verify cart badge shows 1 item");
+		String cartCount = driver.findElement(By.className("shopping_cart_badge")).getText();
+		Assert.assertEquals(cartCount, "1");
+
+		System.out.println("4. Click cart icon");
+		driver.findElement(By.className("shopping_cart_link")).click();
+		Thread.sleep(2000);
+
+		System.out.println("5. Verify cart page is opened");
+		Assert.assertTrue(
+				driver.getCurrentUrl().contains("cart"),
+				"Cart page was not opened"
+		);
+
+		System.out.println("6. Verify Sauce Labs Backpack is added to cart");
+		String productName = driver.findElement(By.className("inventory_item_name")).getText();
+
+		Assert.assertEquals(
+				productName,
+				"Sauce Labs Backpack",
+				"Sauce Labs Backpack was not added to the cart"
+		);
+
+		System.out.println("7. End add product to cart test");
+	}
+
+	@Test
+	public void verifyUserCanCompleteCheckoutSuccessfully() throws InterruptedException {
+		System.out.println("0. Start checkout test");
+
+		driver.get("https://www.saucedemo.com/");
+		driver.manage().window().setSize(new Dimension(1350, 637));
+		Thread.sleep(2000);
+
+		System.out.println("1. Login with valid user");
+		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).sendKeys("standard_user");
+		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).sendKeys("secret_sauce");
+		driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).click();
+		Thread.sleep(2000);
+
+		System.out.println("2. Add multiple products to cart");
+		driver.findElement(By.cssSelector("*[data-test=\"add-to-cart-sauce-labs-backpack\"]")).click();
+		driver.findElement(By.cssSelector("*[data-test=\"add-to-cart-sauce-labs-bike-light\"]")).click();
+		driver.findElement(By.cssSelector("*[data-test=\"add-to-cart-sauce-labs-bolt-t-shirt\"]")).click();
+		Thread.sleep(1000);
+
+
+		System.out.println("3. Verify cart badge shows 3 items");
+		String cartCount = driver.findElement(By.className("shopping_cart_badge")).getText();
+		Assert.assertEquals(cartCount, "3");
+
+		System.out.println("4. Open cart");
+		driver.findElement(By.className("shopping_cart_link")).click();
+		Thread.sleep(2000);
+
+		System.out.println("5. Verify all products are in cart");
+		String cartPageText = driver.findElement(By.className("cart_list")).getText();
+
+		Assert.assertTrue(cartPageText.contains("Sauce Labs Backpack"), "Backpack is not displayed in cart");
+		Assert.assertTrue(cartPageText.contains("Sauce Labs Bike Light"), "Bike Light is not displayed in cart");
+		Assert.assertTrue(cartPageText.contains("Sauce Labs Bolt T-Shirt"), "Bolt T-Shirt is not displayed in cart");
+
+
+		System.out.println("6. Click checkout");
+		driver.findElement(By.cssSelector("*[data-test=\"checkout\"]")).click();
+		Thread.sleep(2000);
+
+		System.out.println("7. Enter checkout information");
+		driver.findElement(By.cssSelector("*[data-test=\"firstName\"]")).sendKeys("Emma");
+		driver.findElement(By.cssSelector("*[data-test=\"lastName\"]")).sendKeys("Red");
+		driver.findElement(By.cssSelector("*[data-test=\"postalCode\"]")).sendKeys("75070");
+		Thread.sleep(1000);
+
+		System.out.println("8. Click continue");
+		driver.findElement(By.cssSelector("*[data-test=\"continue\"]")).click();
+		Thread.sleep(2000);
+
+		System.out.println("9. Verify checkout overview page");
+		Assert.assertTrue(
+				driver.getCurrentUrl().contains("checkout-step-two"),
+				"Checkout overview page is not opened"
+		);
+
+		System.out.println("10. Verify all products are displayed in checkout overview");
+		String overviewPageText = driver.findElement(By.className("cart_list")).getText();
+
+		Assert.assertTrue(overviewPageText.contains("Sauce Labs Backpack"), "Backpack is not displayed in overview");
+		Assert.assertTrue(overviewPageText.contains("Sauce Labs Bike Light"), "Bike Light is not displayed in overview");
+		Assert.assertTrue(overviewPageText.contains("Sauce Labs Bolt T-Shirt"), "Bolt T-Shirt is not displayed in overview");
+
+		System.out.println("11. Click finish");
+		driver.findElement(By.cssSelector("*[data-test=\"finish\"]")).click();
+		Thread.sleep(2000);
+
+
+		System.out.println("12. Verify order confirmation message");
+		String confirmationMessage = driver.findElement(By.className("complete-header")).getText();
+
+		Assert.assertEquals(
+				confirmationMessage,
+				"Thank you for your order!",
+				"Order confirmation message is not displayed correctly"
+		);
+
+		System.out.println("13. Click back home");
+		driver.findElement(By.cssSelector("*[data-test=\"back-to-products\"]")).click();
+		Thread.sleep(2000);
+
+		System.out.println("14. End checkout test");
+		Thread.sleep(2000);
+	}
+
+	@Test
+	public void verifyUserCanLogoutSuccessfully() throws InterruptedException {
+		System.out.println("0. Start logout test");
+
+		driver.get("https://www.saucedemo.com/");
+		driver.manage().window().setSize(new Dimension(1350, 637));
+		Thread.sleep(2000);
+
+		System.out.println("1. Login with valid user");
+		driver.findElement(By.cssSelector("*[data-test=\"username\"]")).sendKeys("standard_user");
+		driver.findElement(By.cssSelector("*[data-test=\"password\"]")).sendKeys("secret_sauce");
+		driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).click();
+		Thread.sleep(2000);
+
+		System.out.println("2. Open menu");
+		driver.findElement(By.id("react-burger-menu-btn")).click();
+		Thread.sleep(1000);
+
+		System.out.println("3. Click logout");
+		driver.findElement(By.id("logout_sidebar_link")).click();
+		Thread.sleep(2000);
+
+		System.out.println("4. Verify user is back on login page");
+		Assert.assertTrue(driver.getCurrentUrl().contains("saucedemo.com"));
+		Assert.assertTrue(driver.findElement(By.cssSelector("*[data-test=\"login-button\"]")).isDisplayed());
+
+		System.out.println("5. End logout test");
 	}
 }
