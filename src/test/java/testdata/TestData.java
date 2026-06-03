@@ -17,6 +17,13 @@ public class TestData {
     public static final String BIKE_LIGHT_PRODUCT = "Sauce Labs Bike Light";
     public static final String BOLT_T_SHIRT_PRODUCT = "Sauce Labs Bolt T-Shirt";
 
+    public static final String ONE_ITEM_CART_COUNT = "1";
+    public static final String THREE_ITEMS_CART_COUNT = "3";
+
+    public static final String INVENTORY_PAGE_URL_KEYWORD = "inventory";
+    public static final String CART_PAGE_URL_KEYWORD = "cart";
+    public static final String CHECKOUT_OVERVIEW_URL_KEYWORD = "checkout-step-two";
+
     public static final String LOGIN_ERROR_MESSAGE = "Username and password do not match";
     public static final String ORDER_CONFIRMATION_MESSAGE = "Thank you for your order!";
     public static final String SAUCEDEMO_DOMAIN = "saucedemo.com";
