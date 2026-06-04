@@ -27,4 +27,11 @@ public class TestData {
     public static final String LOGIN_ERROR_MESSAGE = "Username and password do not match";
     public static final String ORDER_CONFIRMATION_MESSAGE = "Thank you for your order!";
     public static final String SAUCEDEMO_DOMAIN = "saucedemo.com";
+    public static final String FIRST_NAME_REQUIRED_ERROR = "Error: First Name is required";
+    public static final String LOCKED_OUT_USERNAME = "locked_out_user";
+    public static final String LOCKED_OUT_ERROR_MESSAGE = "Sorry, this user has been locked out";
+    public static final String BACKPACK_PRODUCT_PRICE = "$29.99";
 }
+
+
+

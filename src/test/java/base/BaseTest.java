@@ -20,6 +20,9 @@ public class BaseTest {
     protected WebDriver driver;
     protected WebDriverWait wait;
 
+    private static final boolean DEMO_MODE = true;
+    private static final int DEMO_DELAY_MS = 1000;
+
     @BeforeMethod
     public void setUp() {
 
@@ -55,5 +58,14 @@ public class BaseTest {
 
     protected boolean waitForUrlToContain(String urlText) {
         return wait.until(ExpectedConditions.urlContains(urlText));
+    }
+    protected void slowDownForDemo() {
+        if (DEMO_MODE) {
+            try {
+                Thread.sleep(DEMO_DELAY_MS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 }
