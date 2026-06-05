@@ -407,4 +407,217 @@ public class LoginBasicTest extends BaseTest {
 		System.out.println("6. End product details page test");
 	}
 
+	@Test
+	public void verifyCartPersistsAfterContinueShopping() {
+		System.out.println("0. Start cart persistence test");
+
+		driver.get(TestData.BASE_URL);
+		driver.manage().window().setSize(new Dimension(1350, 637));
+
+		System.out.println("1. Login with valid user");
+		loginAsStandardUser();
+		slowDownForDemo();
+
+		ProductsPage productsPage = new ProductsPage(driver);
+		CartPage cartPage = new CartPage(driver);
+
+		System.out.println("2. Add Sauce Labs Backpack to cart");
+		productsPage.addBackpackToCart();
+		slowDownForDemo();
+
+		System.out.println("3. Verify cart badge shows 1 item");
+		Assert.assertEquals(
+				productsPage.getCartBadgeCount(),
+				TestData.ONE_ITEM_CART_COUNT,
+				"Cart badge count is not showing 1 after adding product"
+		);
+
+		System.out.println("4. Open cart");
+		productsPage.openCart();
+		slowDownForDemo();
+
+		System.out.println("5. Verify Backpack is displayed in cart");
+		Assert.assertTrue(
+				cartPage.isProductDisplayedInCart(TestData.BACKPACK_PRODUCT),
+				"Backpack is not displayed in cart"
+		);
+
+		System.out.println("6. Click Continue Shopping");
+		cartPage.clickContinueShopping();
+		slowDownForDemo();
+
+		System.out.println("7. Verify user is back on products page");
+		Assert.assertTrue(
+				waitForUrlToContain(TestData.INVENTORY_PAGE_URL_KEYWORD),
+				"User was not navigated back to products page"
+		);
+
+		System.out.println("8. Verify cart badge still shows 1 item");
+		Assert.assertEquals(
+				productsPage.getCartBadgeCount(),
+				TestData.ONE_ITEM_CART_COUNT,
+				"Cart badge count did not persist after continuing shopping"
+		);
+
+		System.out.println("9. Open cart again");
+		productsPage.openCart();
+		slowDownForDemo();
+
+		System.out.println("10. Verify Backpack is still displayed in cart");
+		Assert.assertTrue(
+				cartPage.isProductDisplayedInCart(TestData.BACKPACK_PRODUCT),
+				"Backpack did not persist in cart after continuing shopping"
+		);
+
+		System.out.println("11. End cart persistence test");
+	}
+
+	@Test
+	public void verifyUserCanRemoveOneItemFromMultiProductCart() {
+		System.out.println("0. Start remove one item from multi-product cart test");
+
+		driver.get(TestData.BASE_URL);
+		driver.manage().window().setSize(new Dimension(1350, 637));
+
+		System.out.println("1. Login with valid user");
+		loginAsStandardUser();
+		slowDownForDemo();
+
+		ProductsPage productsPage = new ProductsPage(driver);
+		CartPage cartPage = new CartPage(driver);
+
+		System.out.println("2. Add multiple products to cart");
+		productsPage.addMultipleProductsToCart();
+		slowDownForDemo();
+
+		System.out.println("3. Verify cart badge shows 3 items");
+		Assert.assertEquals(
+				productsPage.getCartBadgeCount(),
+				TestData.THREE_ITEMS_CART_COUNT,
+				"Cart badge count is not showing 3 after adding products"
+		);
+
+		System.out.println("4. Open cart");
+		productsPage.openCart();
+		slowDownForDemo();
+
+		System.out.println("5. Verify all 3 products are displayed in cart");
+		Assert.assertTrue(
+				cartPage.isProductDisplayedInCart(TestData.BACKPACK_PRODUCT),
+				"Backpack is not displayed in cart"
+		);
+
+		Assert.assertTrue(
+				cartPage.isProductDisplayedInCart(TestData.BIKE_LIGHT_PRODUCT),
+				"Bike Light is not displayed in cart"
+		);
+
+		Assert.assertTrue(
+				cartPage.isProductDisplayedInCart(TestData.BOLT_T_SHIRT_PRODUCT),
+				"Bolt T-Shirt is not displayed in cart"
+		);
+
+		System.out.println("6. Remove Bike Light from cart");
+		cartPage.removeBikeLightFromCart();
+		slowDownForDemo();
+
+		String expectedCartCountAfterRemoval = String.valueOf(3 - 1);
+
+		System.out.println("7. Verify cart badge shows 2 items after removal");
+		Assert.assertEquals(
+				productsPage.getCartBadgeCount(),
+				expectedCartCountAfterRemoval,
+				"Cart badge count is not showing 2 after removing one product"
+		);
+
+		System.out.println("8. Verify Bike Light is removed from cart");
+		Assert.assertFalse(
+				cartPage.isProductDisplayedInCart(TestData.BIKE_LIGHT_PRODUCT),
+				"Bike Light is still displayed in cart after removal"
+		);
+
+		System.out.println("9. Verify remaining products are still displayed in cart");
+		Assert.assertTrue(
+				cartPage.isProductDisplayedInCart(TestData.BACKPACK_PRODUCT),
+				"Backpack should still be displayed in cart"
+		);
+
+		Assert.assertTrue(
+				cartPage.isProductDisplayedInCart(TestData.BOLT_T_SHIRT_PRODUCT),
+				"Bolt T-Shirt should still be displayed in cart"
+		);
+
+		System.out.println("10. End remove one item from multi-product cart test");
+	}
+
+	@Test
+	public void verifyUserCanCancelCheckoutBeforePlacingOrder() {
+		System.out.println("0. Start cancel checkout test");
+
+		driver.get(TestData.BASE_URL);
+		driver.manage().window().setSize(new Dimension(1350, 637));
+
+		System.out.println("1. Login with valid user");
+		loginAsStandardUser();
+		slowDownForDemo();
+
+		ProductsPage productsPage = new ProductsPage(driver);
+		CartPage cartPage = new CartPage(driver);
+		CheckoutPage checkoutPage = new CheckoutPage(driver);
+
+		System.out.println("2. Add Sauce Labs Backpack to cart");
+		productsPage.addBackpackToCart();
+		slowDownForDemo();
+
+		System.out.println("3. Verify cart badge shows 1 item");
+		Assert.assertEquals(
+				productsPage.getCartBadgeCount(),
+				TestData.ONE_ITEM_CART_COUNT,
+				"Cart badge count is not showing 1 after adding product"
+		);
+
+		System.out.println("4. Open cart");
+		productsPage.openCart();
+		slowDownForDemo();
+
+		System.out.println("5. Click checkout");
+		cartPage.clickCheckout();
+
+		System.out.println("6. Enter checkout information");
+		checkoutPage.enterCheckoutInformation(
+				TestData.FIRST_NAME,
+				TestData.LAST_NAME,
+				TestData.POSTAL_CODE
+		);
+
+		System.out.println("7. Click continue");
+		checkoutPage.clickContinue();
+		slowDownForDemo();
+
+		System.out.println("8. Verify checkout overview page is opened");
+		Assert.assertTrue(
+				waitForUrlToContain(TestData.CHECKOUT_OVERVIEW_URL_KEYWORD),
+				"Checkout overview page is not opened"
+		);
+
+		System.out.println("9. Click cancel");
+		checkoutPage.clickCancel();
+		slowDownForDemo();
+
+		System.out.println("10. Verify user is navigated back to products page");
+		Assert.assertTrue(
+				waitForUrlToContain(TestData.INVENTORY_PAGE_URL_KEYWORD),
+				"User was not navigated back to products page after cancel checkout"
+		);
+
+		System.out.println("11. Verify cart badge still shows 1 item");
+		Assert.assertEquals(
+				productsPage.getCartBadgeCount(),
+				TestData.ONE_ITEM_CART_COUNT,
+				"Cart item did not persist after canceling checkout"
+		);
+
+		System.out.println("12. End cancel checkout test");
+	}
+
 }

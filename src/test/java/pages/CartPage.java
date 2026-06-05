@@ -15,6 +15,8 @@ public class CartPage {
     private By checkoutButton = By.cssSelector("*[data-test=\"checkout\"]");
     private By backpackRemoveButton = By.cssSelector("*[data-test=\"remove-sauce-labs-backpack\"]");
     private By cartBadge = By.className("shopping_cart_badge");
+    private By continueShoppingButton = By.cssSelector("*[data-test=\"continue-shopping\"]");
+    private By bikeLightRemoveButton = By.cssSelector("*[data-test=\"remove-sauce-labs-bike-light\"]");
 
     public CartPage(WebDriver driver) {
         this.driver = driver;
@@ -31,6 +33,14 @@ public class CartPage {
 
     public void clickCheckout() {
         driver.findElement(checkoutButton).click();
+    }
+
+    public void clickContinueShopping() {
+        wait.until(ExpectedConditions.elementToBeClickable(continueShoppingButton)).click();
+    }
+
+    public void removeBikeLightFromCart() {
+        wait.until(ExpectedConditions.elementToBeClickable(bikeLightRemoveButton)).click();
     }
 
     public void removeBackpackFromCart() {

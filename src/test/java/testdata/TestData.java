@@ -31,7 +31,9 @@ public class TestData {
     public static final String LOCKED_OUT_USERNAME = "locked_out_user";
     public static final String LOCKED_OUT_ERROR_MESSAGE = "Sorry, this user has been locked out";
     public static final String BACKPACK_PRODUCT_PRICE = "$29.99";
+    public static final String TWO_ITEMS_CART_COUNT = "2";
 }
+
 
 
 

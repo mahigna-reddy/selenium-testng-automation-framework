@@ -20,6 +20,7 @@ public class CheckoutPage {
     private By confirmationMessage = By.className("complete-header");
     private By backHomeButton = By.cssSelector("*[data-test=\"back-to-products\"]");
     private By checkoutErrorMessage = By.cssSelector("*[data-test=\"error\"]");
+    private By cancelButton = By.cssSelector("*[data-test=\"cancel\"]");
 
     public CheckoutPage(WebDriver driver) {
         this.driver = driver;
@@ -54,5 +55,9 @@ public class CheckoutPage {
 
     public void clickBackHome() {
         driver.findElement(backHomeButton).click();
+    }
+
+    public void clickCancel() {
+        wait.until(ExpectedConditions.elementToBeClickable(cancelButton)).click();
     }
 }
